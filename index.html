@@ -1,1 +1,98 @@
-My GitHub Page
+<html>
+    <head>
+        <title>Kanban for GitHub</title>
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+        <!--script type="text/javascript" src="http://www.webtoolkit.info/djs/webtoolkit.base64.js"></script-->
+        <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"></script>
+        <script type="text/javascript">
+var GITHUB_API_URL = 'https://api.github.com/repos/';
+var client = null;
+var issues_template = '<p><h2>#${number} - ${title}</h2>${body}</p>'
+
+function GitHubApi(user, repo, auth) {
+    this.user = user;
+    this.repo = repo;
+    //this.auth = "Basic " + Base64.encode(auth.username + ":" + auth.password)
+    
+    this.base_url = GITHUB_API_URL + this.user + '/' + this.repo + '/';
+}
+
+GitHubApi.prototype.get_issues = function() {
+    var response = null;
+    $.ajax({
+        url: this.base_url + 'issues',
+        async: false,
+        success: function(data) {
+            $('#issues').html('');
+            response = data;
+        }
+    });
+    return response;
+}
+
+GitHubApi.prototype.get_labels = function() {
+    var response = null;
+    $.ajax({
+        url: this.base_url + 'labels',
+        async: false,
+        success: function(data){
+            response = data;
+        }
+    });
+    return response;
+}
+
+$(function(){
+    $('#loginform').submit(function(){
+        var $this = $(this);
+        $this.hide();
+        var username = $this.find('[name=username]').val();
+        var password = $this.find('[name=password]').val();
+        var repo_user = $this.find('[name=repo-user]').val();
+        var repo_name = $this.find('[name=repo-name]').val();
+        
+        auth = {
+            username: username,
+            password: password
+        };
+        
+        client = new GitHubApi(repo_user, repo_name, auth);
+        var labels = client.get_labels();
+        
+        return false;
+    });
+    
+});
+        </script>
+    </head>
+    <body>
+        <h1>Kanban for GitHub</h1>
+        <form id="loginform">
+            <p>
+                <label for="username"><br />Username
+                    <input type="text" name="username" value="andres-torres-marroquin"/>
+                </label>
+            </p>
+            <p>
+                <label for="username"><br />Password
+                    <input type="password" name="password" value=""/>
+                </label>
+            </p>
+            <p>
+                <label for="username"><br />Repo User
+                    <input type="text" name="repo-user" value="andres-torres-marroquin"/>
+                </label>
+            </p>
+            <p>
+                <label for="username"><br />Repo Name
+                    <input type="text" name="repo-name" value="testing-github-api"/>
+                </label>
+            </p>
+            <input type="submit"/>
+        </form>
+        <div id="issues"></div>
+        <div id="labels"></div>
+    </body>
+</html>
