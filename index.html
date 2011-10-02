@@ -7,6 +7,15 @@
      vertical-align: top;
      display: inline-block;
      border: 1px solid blue;
+     height: 300px;
+}
+.phase-name {
+ text-align: center;
+ padding: 10px 0 7px 0;
+ font-size: 120%;
+}
+.issues {
+    height: 100%;
 }
 .issue {
      border: 1px solid red;
@@ -82,7 +91,9 @@ span.ui-icon {
 </script>
 <script id="phase-template" type="text/x-jquery-tmpl">
     <div id="phase${number}" class="phase" style="width: ${percentage}%" data-name="${name}">
-        <h3>${name}</h3>
+        <div class="phase-name ui-state-default">
+            ${phase_name}
+        </div>
         <div class="issues"></div>
     </div>
 </script>
@@ -214,6 +225,7 @@ function draw_phases(phases){
     $.each(phases, function(i, phase) {
         phase.number = /\d+/.exec(phase.name);
         phase.percentage = percentage;
+        phase.phase_name = phase.name.slice(11);
         $('#phase-template').tmpl(phase).appendTo("#phases");
         draw_issues(phase);
     });
