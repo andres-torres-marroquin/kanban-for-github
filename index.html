@@ -262,6 +262,24 @@ $(function(){
         var phases = get_phases(labels);
         draw_phases(phases);
         
+        $('.issues').sortable({
+	        connectWith: ".issues",
+    	    distance: 15,
+        	revert: true,
+	        opacity: 0.9,
+    	    placeholder: "ui-state-highlight issue-placeholder",
+			stop: function(event, ui){
+		    	var $element = $(ui.item);
+			    var number = $element.attr('data-number');
+			    var phase = $element.parents('.phase').attr('data-name');
+			    labels = client.get_labels_for_issue(number);
+		    	labels = remove_phases(labels);
+			    labels = get_labels_name(labels);
+			    labels.push(phase);		    
+			    client.replace_labels_for_issue(number, labels);
+			}
+		}).disableSelection();
+        
         return false;
     }).hide().submit();
     
@@ -271,23 +289,6 @@ $(function(){
     
     $('#tabs').tabs();
     
-    $('.issues').sortable({
-        connectWith: ".issues",
-        distance: 15,
-        revert: true,
-        opacity: 0.9,
-        placeholder: "ui-state-highlight issue-placeholder",
-		stop: function(event, ui){
-		    var $element = $(ui.item);
-		    var number = $element.attr('data-number');
-		    var phase = $element.parents('.phase').attr('data-name');
-		    labels = client.get_labels_for_issue(number);
-		    labels = remove_phases(labels);
-		    labels = get_labels_name(labels);
-		    labels.push(phase);		    
-		    client.replace_labels_for_issue(number, labels);
-		}
-	}).disableSelection();
 });
         </script>
     </head>
