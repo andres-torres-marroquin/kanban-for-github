@@ -4,7 +4,8 @@
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
 <style>
 .phase {
-     float: left;
+     vertical-align: top;
+     display: inline-block;
      border: 1px solid blue;
 }
 .issue {
@@ -13,33 +14,39 @@
 </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-        <!--script type="text/javascript" src="http://www.webtoolkit.info/djs/webtoolkit.base64.js"></script-->
+        <script type="text/javascript" src="http://www.webtoolkit.info/djs/webtoolkit.base64.js"></script>
         <script type="text/javascript" src="media/js/JSON-js/json2.js"></script>
         <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"></script>
 <script id="issue-template" type="text/x-jquery-tmpl">
-	<div class="issue">
-	    <h4>#${number} - ${title}
-	        {{if assignee}} 
-	        <a href="${assignee.url}">
-	            ${assignee.login}
-	            <img src="${assignee.avatar_url}" width="20" height="20"/>
-	    	</a>
-	    	<h6>{{/if}}</h6>
-	    </h4>
-	    ${body}
-	</div>
+    <div class="issue">
+        <h4>#${number} - ${title}
+            {{if assignee}} 
+            <a href="${assignee.url}">
+                ${assignee.login}
+                <img src="${assignee.avatar_url}" width="20" height="20"/>
+            </a>
+            <h6>{{/if}}</h6>
+            {{each labels}}
+                ${$value.name}<br/>
+            {{/each}}
+        </h4>
+        ${body}
+    </div>
+</script>
+<script id="phase-template" type="text/x-jquery-tmpl">
+    <div id="phase${number}" class="phase" style="width: ${percentage}%">
+        <h3>${name}</h3>
+    </div>
 </script>
         <script type="text/javascript">
 var GITHUB_API_URL = 'https://api.github.com/repos/';
 var client = null;
-//var issue_template = '<div class="issue"><h4>#${number} - ${title} {{if assignee}} <a href="${assignee.url}">${assignee.login}<img src="${assignee.avatar_url}" width="20" height="20"/></a>{{/if}}</h4>${body}</div>'
-var phase_template = '<div id="phase${number}" class="phase" style="width: ${percentage}%"><h3>${name}</h3></div>'
 
 function GitHubApi(user, repo, auth) {
     this.user = user;
     this.repo = repo;
-    //this.auth = "Basic " + Base64.encode(auth.username + ":" + auth.password)
-    
+    this.is_auth_enabled = auth.username && auth.password;
+    this.auth = "Basic " + Base64.encode(auth.username + ":" + auth.password);
     this.base_url = GITHUB_API_URL + this.user + '/' + this.repo + '/';
 }
 
@@ -54,10 +61,15 @@ GitHubApi.prototype.get_issues = function(parameters) {
     var response = null;
     var parameters = parameters || {};    
     this._clean_params(parameters);
+    var me = this;
     $.ajax({
         url: this.base_url + 'issues',
         async: false,
         data: parameters,
+        beforeSend: function(xhr) {
+            if(me.is_auth_enabled)
+                xhr.setRequestHeader("Authorization", me.auth)
+        },
         success: function(data) {
             $('#issues').html('');
             response = data;
@@ -69,11 +81,16 @@ GitHubApi.prototype.get_issues = function(parameters) {
 GitHubApi.prototype.get_labels = function(parameters) {
     var response = null;
     var parameters = parameters || {};
+    var me = this;
     $.ajax({
         url: this.base_url + 'labels',
         async: false,
         data: parameters,
-        success: function(data){
+        beforeSend: function(xhr) {
+            if(me.is_auth_enabled)
+                xhr.setRequestHeader("Authorization", me.auth)
+        },
+        success: function(data) {
             response = data;
         }
     });
@@ -95,7 +112,7 @@ function draw_phases(phases){
     $.each(phases, function(i, phase) {
         phase.number = /\d+/.exec(phase.name);
         phase.percentage = percentage;
-        $.tmpl(phase_template, phase).appendTo("#phases");
+        $('#phase-template').tmpl(phase).appendTo("#phases");
         draw_issues(phase);
     });
 }
@@ -172,8 +189,8 @@ $(function(){
                 <li><a href="#phases">Phases</a></li>
                 <li><a href="#labels">Labels</a></li>
             </ul>
-        	<div id="phases"></div>
-	        <div id="labels"></div>
-		</div>
+            <div id="phases"></div>
+            <div id="labels"></div>
+        </div>
     </body>
 </html>
