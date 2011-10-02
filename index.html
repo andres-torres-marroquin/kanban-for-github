@@ -81,7 +81,7 @@ span.ui-icon {
     </div>
 </script>
 <script id="phase-template" type="text/x-jquery-tmpl">
-    <div id="phase${number}" class="phase" style="width: ${percentage}%">
+    <div id="phase${number}" class="phase" style="width: ${percentage}%" data-name="${name}">
         <h3>${name}</h3>
         <div class="issues"></div>
     </div>
@@ -145,12 +145,66 @@ GitHubApi.prototype.get_labels = function(parameters) {
     return response;
 }
 
+GitHubApi.prototype.add_labels_to_issue = function(issue_id, labels) {
+    var me = this;
+    $.ajax({
+        url: this.base_url + 'issues/' + issue_id + '/labels',
+        type: 'POST',
+        data: JSON.stringify(labels),
+        beforeSend: function(xhr) {
+            if(me.is_auth_enabled)
+                xhr.setRequestHeader("Authorization", me.auth)
+        },
+        success: function(data) {
+        }
+    });
+}
+
+GitHubApi.prototype.get_labels_for_issue = function(issue_id) {
+    var me = this;
+    var response = null;
+    $.ajax({
+        url: this.base_url + 'issues/' + issue_id + '/labels',
+		async: false,
+        beforeSend: function(xhr) {
+            if(me.is_auth_enabled)
+                xhr.setRequestHeader("Authorization", me.auth)
+        },
+        success: function(data) {
+			response = data;
+        }
+    });
+    return response;
+}
+
+GitHubApi.prototype.replace_labels_for_issue = function(issue_id, labels) {
+    var me = this;
+    $.ajax({
+        url: this.base_url + 'issues/' + issue_id + '/labels',
+        type: 'PUT',
+        data: JSON.stringify(labels),
+        beforeSend: function(xhr) {
+            if(me.is_auth_enabled)
+                xhr.setRequestHeader("Authorization", me.auth)
+        },
+        success: function(data) {
+        }
+    });
+}
+
 function get_phases(labels) {
     var phases = [];
-    $.each(labels, function(i, v){
-        if(/Phase #\d+ - .+/.test(v.name))
-            phases.push(v)
-    });    
+    $.each(labels, function(i, label){
+        if(/Phase #\d+ - .+/.test(label.name))
+            phases.push(label)
+    });
+    phases.sort(function(a, b) {
+        if (a.name > b.name) 
+    		return 1;
+    	else if (a.name < b.name)
+    	    return -1;
+    	return 0;
+    })
     return phases;
 }
 
@@ -172,6 +226,24 @@ function draw_issues(phase) {
     });
 }
 
+function remove_phases(labels) {
+    var result = []
+    $.each(labels, function(i, label){
+        if(!/Phase #\d+ - .+/.test(label.name))
+            result.push(label)
+    });
+    return result;
+}
+
+function get_labels_name(labels) {
+    var result = []
+    $.each(labels, function(i, label){
+        if(!/Phase #\d+ - .+/.test(label.name))
+            result.push(label.name)
+    });
+    return result;
+}
+
 $(function(){
     $('#loginform').submit(function(){
         var $this = $(this);
@@ -186,12 +258,8 @@ $(function(){
         };
         
         client = new GitHubApi(repo_user, repo_name, auth);
-        //var issues = client.get_issues();
-        //console.log(issues);
         var labels = client.get_labels();
-        console.log(labels);
         var phases = get_phases(labels);
-        console.log(phases);
         draw_phases(phases);
         
         return false;
@@ -210,6 +278,14 @@ $(function(){
         opacity: 0.9,
         placeholder: "ui-state-highlight issue-placeholder",
 		stop: function(event, ui){
+		    var $element = $(ui.item);
+		    var number = $element.attr('data-number');
+		    var phase = $element.parents('.phase').attr('data-name');
+		    labels = client.get_labels_for_issue(number);
+		    labels = remove_phases(labels);
+		    labels = get_labels_name(labels);
+		    labels.push(phase);		    
+		    client.replace_labels_for_issue(number, labels);
 		}
 	}).disableSelection();
 });
