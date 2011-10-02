@@ -11,6 +11,48 @@
 .issue {
      border: 1px solid red;
 }
+.issue-header {
+ cursor: move;
+ padding: 4px 7px;
+ margin: 2px;
+ border-radius: 4px;
+ -moz-border-radius: 4px;
+ -webkit-border-radius: 4px;
+}
+.issue-header a .ui-icon {
+ float: left;
+ padding-right: 2px;
+ display: none;
+}
+.issue:hover .issue-header a .ui-icon {
+ display: inline;
+}
+.issue-assignee {
+ float: right;
+ font-size: 60%;
+}
+.ui-state-highlight.issue-placeholder {
+ margin: 10px 5px;
+}
+.issue-assignee img {
+ margin-left: 5px;
+}
+.issue-assignee-name {
+ padding: 4px 0;
+ float: left;
+}
+span.ui-icon {
+ float: left;
+ margin-right: 2px;
+}
+.issue-name {
+ margin: 5px 7px;
+ overflow: hidden;
+ font-size: 75%;
+}
+.issue-assignee {
+ float: right;
+}
 </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
@@ -18,24 +60,30 @@
         <script type="text/javascript" src="media/js/JSON-js/json2.js"></script>
         <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"></script>
 <script id="issue-template" type="text/x-jquery-tmpl">
-    <div class="issue">
-        <h4>#${number} - ${title}
-            {{if assignee}} 
-            <a href="${assignee.url}">
-                ${assignee.login}
-                <img src="${assignee.avatar_url}" width="20" height="20"/>
+    <div class="issue ui-widget-content" data-number="${number}">
+    	<div class="issue-header ui-state-default">
+       		<a href="${html_url}">
+                <span class="ui-icon ui-icon-search"></span>
+                <strong><div class="issue-name">
+                    ${number}
+                </div></strong>
             </a>
-            <h6>{{/if}}</h6>
-            {{each labels}}
-                ${$value.name}<br/>
-            {{/each}}
-        </h4>
-        ${body}
+            &nbsp;${title}
+            <div class="issue-assignee">
+            	{{if assignee}}
+        	        <span class="issue-assignee-name">${assignee.login}</span>
+    	            <img src="${assignee.avatar_url}" width="20" height="20"/>
+	            {{else}}
+                	<span class="issue-assignee-name">Not assigned</span>
+            	{{/if}}
+        	</div>
+        </div>
     </div>
 </script>
 <script id="phase-template" type="text/x-jquery-tmpl">
     <div id="phase${number}" class="phase" style="width: ${percentage}%">
         <h3>${name}</h3>
+        <div class="issues"></div>
     </div>
 </script>
         <script type="text/javascript">
@@ -120,7 +168,7 @@ function draw_phases(phases){
 function draw_issues(phase) {
     var issues = client.get_issues({labels: phase.name});
     $.each(issues, function(i, issue) {
-        $('#issue-template').tmpl(issue).appendTo("#phase" + phase.number);
+        $('#issue-template').tmpl(issue).appendTo("#phase" + phase.number + " .issues");
     });
 }
 
@@ -154,6 +202,16 @@ $(function(){
     });
     
     $('#tabs').tabs();
+    
+    $('.issues').sortable({
+        connectWith: ".issues",
+        distance: 15,
+        revert: true,
+        opacity: 0.9,
+        placeholder: "ui-state-highlight issue-placeholder",
+		stop: function(event, ui){
+		}
+	}).disableSelection();
 });
         </script>
     </head>
