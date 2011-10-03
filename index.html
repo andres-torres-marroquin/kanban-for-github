@@ -6,8 +6,6 @@
 .phase {
     vertical-align: top;
     display: inline-block;
-    border: 1px solid blue;
-    height: 300px;
 }
 .phase-name {
     text-align: center;
@@ -18,7 +16,7 @@
     height: 100%;
 }
 .issue {
-    border: 1px solid red;
+    margin: 5px 7px;
 }
 .issue-header {
     cursor: move;
@@ -39,6 +37,9 @@
 .issue-assignee {
     float: right;
     font-size: 60%;
+}
+.issue-number {
+    font-size: 85%;
 }
 .ui-state-highlight.issue-placeholder {
     margin: 10px 5px;
@@ -62,6 +63,14 @@ span.ui-icon {
 .issue-assignee {
     float: right;
 }
+#tabs {
+    position: fixed;
+    bottom: 1px;
+    top: 45px;
+    left: 1px;
+    right: 1px;
+    overflow: auto;
+}
 </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
@@ -75,25 +84,20 @@ span.ui-icon {
        		<a href="${html_url}">
                 <span class="ui-icon ui-icon-search"></span>
             </a>
-            <strong>
-              	<span class="issue-name">
-					#${number} ${title}
-		        </span>
-            </strong>
-            
+            <span class="issue-number">${number}</span>
             <div class="issue-assignee">
-            	{{if assignee}}
-        	        <!--span class="issue-assignee-name">${assignee.login}</span-->
-    	            <img src="${assignee.avatar_url}" width="20" height="20"/>
-	            {{else}}
-                	<span class="issue-assignee-name">Not assigned</span>
-            	{{/if}}
+                {{if assignee}}
+                    <img src="${assignee.avatar_url}" width="20" height="20" alt="${assignee.login}" title="${assignee.login}"/>
+                {{else}}
+                    <span class="issue-assignee-name">Not assigned</span>
+                {{/if}}
         	</div>
         </div>
+        <div class="issue-name">${title}</div>
     </div>
 </script>
 <script id="phase-template" type="text/x-jquery-tmpl">
-    <div id="phase${number}" class="phase" style="width: ${percentage}%" data-name="${name}">
+    <div id="phase${number}" class="phase ui-widget-content" style="width: ${percentage}%" data-name="${name}">
         <div class="phase-name ui-state-default">
             ${phase_name}
         </div>
