@@ -81,10 +81,10 @@ span.ui-icon {
 <script id="issue-template" type="text/x-jquery-tmpl">
     <div class="issue ui-widget-content" data-number="${number}">
     	<div class="issue-header ui-state-default">
-       		<a href="${html_url}">
+            <a href="${html_url}" target="_blank">
                 <span class="ui-icon ui-icon-search"></span>
+                <span class="issue-number">${number}</span>
             </a>
-            <span class="issue-number">${number}</span>
             <div class="issue-assignee">
                 {{if assignee}}
                     <img src="${assignee.avatar_url}" width="20" height="20" alt="${assignee.login}" title="${assignee.login}"/>

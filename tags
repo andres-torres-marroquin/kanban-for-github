@@ -1,0 +1,38 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Date	media/js/JSON-js/json.js	/^        Date.prototype.toJSON = function (key) {$/;"	c
+Date	media/js/JSON-js/json2.js	/^        Date.prototype.toJSON = function (key) {$/;"	c
+Date.toJSON	media/js/JSON-js/json.js	/^        Date.prototype.toJSON = function (key) {$/;"	m
+Date.toJSON	media/js/JSON-js/json2.js	/^        Date.prototype.toJSON = function (key) {$/;"	m
+GitHubApi	index.html	/^function GitHubApi(user, repo, auth) {$/;"	f
+JSON	media/js/JSON-js/json.js	/^var JSON;$/;"	v
+JSON	media/js/JSON-js/json2.js	/^var JSON;$/;"	v
+JSON.decycle	media/js/JSON-js/cycle.js	/^    JSON.decycle = function decycle(object) {$/;"	f
+JSON.parse.walk	media/js/JSON-js/json.js	/^            function walk(holder, key) {$/;"	f
+JSON.parse.walk	media/js/JSON-js/json2.js	/^            function walk(holder, key) {$/;"	f
+JSON.retrocycle	media/js/JSON-js/cycle.js	/^    JSON.retrocycle = function retrocycle($) {$/;"	f
+JSON.stringify	media/js/JSON-js/json.js	/^        JSON.stringify = function (value, replacer, space) {$/;"	f
+JSON.stringify	media/js/JSON-js/json2.js	/^        JSON.stringify = function (value, replacer, space) {$/;"	f
+String	media/js/JSON-js/json.js	/^        String.prototype.toJSON      =$/;"	c
+String	media/js/JSON-js/json2.js	/^        String.prototype.toJSON      =$/;"	c
+String.toJSON	media/js/JSON-js/json.js	/^        String.prototype.toJSON      =$/;"	m
+String.toJSON	media/js/JSON-js/json2.js	/^        String.prototype.toJSON      =$/;"	m
+decycle	media/js/JSON-js/cycle.js	/^    JSON.decycle = function decycle(object) {$/;"	f
+draw_issues	index.html	/^function draw_issues(phase) {$/;"	f
+draw_phases	index.html	/^function draw_phases(phases){$/;"	f
+f	media/js/JSON-js/json.js	/^    function f(n) {$/;"	f
+f	media/js/JSON-js/json2.js	/^    function f(n) {$/;"	f
+get_labels_name	index.html	/^function get_labels_name(labels) {$/;"	f
+get_phases	index.html	/^function get_phases(labels) {$/;"	f
+jQuery.cookie	media/js/jquery.cookie.js	/^jQuery.cookie = function (key, value, options) {$/;"	f
+quote	media/js/JSON-js/json.js	/^    function quote(string) {$/;"	f
+quote	media/js/JSON-js/json2.js	/^    function quote(string) {$/;"	f
+remove_phases	index.html	/^function remove_phases(labels) {$/;"	f
+retrocycle	media/js/JSON-js/cycle.js	/^    JSON.retrocycle = function retrocycle($) {$/;"	f
+start	index.html	/^function start(repo_user, repo_name, auth) {$/;"	f
+str	media/js/JSON-js/json.js	/^    function str(key, holder) {$/;"	f
+str	media/js/JSON-js/json2.js	/^    function str(key, holder) {$/;"	f
