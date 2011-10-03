@@ -3,6 +3,19 @@
         <title>Kanban for GitHub</title>
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
 <style>
+#title {
+    float: right;
+    font-size: 15px;
+    margin-right: 30px;
+}
+#tabs {
+    position: fixed;
+    bottom: 1px;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    overflow: auto;
+}
 .phase {
     vertical-align: top;
     display: inline-block;
@@ -13,7 +26,9 @@
     font-size: 120%;
 }
 .issues {
-    height: 100%;
+    height: auto;
+    min-height: 100%;
+    padding: 5px 0px;
 }
 .issue {
     margin: 5px 7px;
@@ -74,14 +89,6 @@ span.ui-icon {
 .issue-assignee {
     float: right;
 }
-#tabs {
-    position: fixed;
-    bottom: 1px;
-    top: 45px;
-    left: 1px;
-    right: 1px;
-    overflow: auto;
-}
 </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
@@ -134,8 +141,8 @@ function GitHubApi(user, repo, auth) {
 }
 
 GitHubApi.prototype._clean_params = function (parameters) {
-    $.each(parameters, function(i, v) {
-        if (v==null)
+    $.each(parameters, function(i, param) {
+        if (param == null)
             delete parameters[i];
     });
 }
@@ -366,13 +373,12 @@ $(function(){
         </script>
     </head>
     <body>
-        <h1>Kanban for GitHub</h1>
-        
         <div id="tabs">
             <ul>
                 <li><a href="#login">Login</a></li>
                 <li><a href="#phases">Phases</a></li>
                 <li><a href="#labels">Labels</a></li>
+                <h1 id="title">Kanban for GitHub</h1>
             </ul>
             <div id="login">
 	            <form id="loginform">
