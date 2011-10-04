@@ -136,6 +136,7 @@ span.ui-icon {
         {{/if}}
     </div>
 </script>
+
 <script id="issue-dialog-template" type="text/x-jquery-tmpl">
     <div id="issue-body">{{html body_html}}</div>
     <div id="issue-assigned">
@@ -148,6 +149,7 @@ span.ui-icon {
     <div id="comments">
     </div>
 </script>
+
 <script id="phase-template" type="text/x-jquery-tmpl">
     <div id="phase${number}" class="phase ui-widget-content" style="width: ${percentage}%" data-name="${name}">
         <div class="phase-name ui-state-default">
@@ -156,9 +158,11 @@ span.ui-icon {
         <div class="issues"></div>
     </div>
 </script>
+
 <script id="label-template" type="text/x-jquery-tmpl">
     <div style="background: #${color}" class="label"><span class="ui-icon ui-icon-tag"></span>${name}</div>
 </script>
+
 <script id="assignee-template" type="text/x-jquery-tmpl">
     {{if assignee}}
         <img src="${assignee.avatar_url}" width="20" height="20" alt="${assignee.login}" title="${assignee.login}"/>
@@ -166,9 +170,14 @@ span.ui-icon {
         <span class="issue-assignee-name">Not assigned</span>
     {{/if}}
 </script>
+
+<script id="comment-template" type="text/x-jquery-tmpl">
+    {{html body_html}}
+</script>
         <script type="text/javascript">
-var GITHUB_API_URL = 'https://api.github.com/repos/';
 var client = null;
+
+var GITHUB_API_URL = 'https://api.github.com/repos/';
 
 function GitHubApi(user, repo, auth) {
     this.user = user;
@@ -261,8 +270,6 @@ GitHubApi.prototype.add_labels_to_issue = function(issue_id, labels) {
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
                 xhr.setRequestHeader("Authorization", me.auth)
-        },
-        success: function(data) {
         }
     });
 }
@@ -295,8 +302,6 @@ GitHubApi.prototype.replace_labels_for_issue = function(issue_id, labels) {
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
                 xhr.setRequestHeader("Authorization", me.auth);
-        },
-        success: function(data) {
         }
     });
 }
@@ -444,11 +449,10 @@ $(function(){
         $("#issue-dialog").html(rendered).dialog('open').dialog('option', 'title', title);
         return false;
     });
+
     $('#issue-dialog').dialog({
         autoOpen: false,
         modal: true,
-        //show: 'explode',
-        //hide: 'blind',
         minWidth: 700
     });
 
