@@ -55,6 +55,7 @@
 }
 .issue-number {
     font-size: 85%;
+    font-weight: bold;
 }
 .ui-state-highlight.issue-placeholder {
     margin: 10px 5px;
@@ -74,8 +75,12 @@ span.ui-icon {
     margin: 5px 7px;
     overflow: hidden;
     font-size: 75%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding-bottom: 10px;
 }
-.labels {
+.labels, .comments {
     margin: 5px 7px;
     font-size: 70%;
 }
@@ -88,6 +93,9 @@ span.ui-icon {
 }
 .issue-assignee {
     float: right;
+}
+.ui-icon-tag {
+    opacity: 0.6;
 }
 </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
@@ -111,10 +119,15 @@ span.ui-icon {
                 {{/if}}
         	</div>
         </div>
-        <div class="issue-name">${title}</div>
+        <div class="issue-name ui-widget-content">${title}</div>
         <div class="labels">
             {{html get_labels_display(labels)}}
         </div>
+        {{if comments}}
+        <div class="comments">
+            <span class="ui-icon ui-icon-comment"></span> ${comments} comment{{if comments!=1}}s{{/if}}
+        </div>
+        {{/if}}
     </div>
 </script>
 <script id="phase-template" type="text/x-jquery-tmpl">
@@ -126,7 +139,7 @@ span.ui-icon {
     </div>
 </script>
 <script id="label-template" type="text/x-jquery-tmpl">
-    <div style="background: #${color}" class="label">${name}</div>
+    <div style="background: #${color}" class="label"><span class="ui-icon ui-icon-tag"></span>${name}</div>
 </script>
         <script type="text/javascript">
 var GITHUB_API_URL = 'https://api.github.com/repos/';
@@ -156,6 +169,7 @@ GitHubApi.prototype.get_issues = function(parameters) {
         url: this.base_url + 'issues',
         async: false,
         data: parameters,
+        dataType: 'json',
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
                 xhr.setRequestHeader("Authorization", me.auth)
@@ -176,6 +190,7 @@ GitHubApi.prototype.get_labels = function(parameters) {
         url: this.base_url + 'labels',
         async: false,
         data: parameters,
+        dataType: 'json',
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
                 xhr.setRequestHeader("Authorization", me.auth)
@@ -192,6 +207,7 @@ GitHubApi.prototype.add_labels_to_issue = function(issue_id, labels) {
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
         type: 'POST',
+        dataType: 'json',
         data: JSON.stringify(labels),
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
@@ -208,6 +224,7 @@ GitHubApi.prototype.get_labels_for_issue = function(issue_id) {
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
 		async: false,
+		dataType: 'json',
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
                 xhr.setRequestHeader("Authorization", me.auth)
@@ -224,6 +241,7 @@ GitHubApi.prototype.replace_labels_for_issue = function(issue_id, labels) {
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
         type: 'PUT',
+        dataType: 'json',
         data: JSON.stringify(labels),
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
@@ -297,7 +315,7 @@ function get_labels_name(labels) {
 }
 
 function start(repo_user, repo_name, auth) {
-client = new GitHubApi(repo_user, repo_name, auth);
+    client = new GitHubApi(repo_user, repo_name, auth);
     var labels = client.get_labels();
     var phases = get_phases(labels);
     draw_phases(phases);
