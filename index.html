@@ -106,7 +106,7 @@ span.ui-icon {
         <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"></script>
 <script id="issue-template" type="text/x-jquery-tmpl">
     <div class="issue ui-widget-content" data-number="${number}">
-    	<div class="issue-header ui-state-default">
+        <div class="issue-header ui-state-default">
             <a href="${html_url}" target="_blank">
                 <span class="ui-icon ui-icon-search"></span>
                 <span class="issue-number">${number}</span>
@@ -117,7 +117,7 @@ span.ui-icon {
                 {{else}}
                     <span class="issue-assignee-name">Not assigned</span>
                 {{/if}}
-        	</div>
+            </div>
         </div>
         <div class="issue-name ui-widget-content">${title}</div>
         <div class="labels">
@@ -223,14 +223,14 @@ GitHubApi.prototype.get_labels_for_issue = function(issue_id) {
     var response = null;
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
-		async: false,
-		dataType: 'json',
+        async: false,
+        dataType: 'json',
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth)
+                xhr.setRequestHeader("Authorization", me.auth);
         },
         success: function(data) {
-			response = data;
+            response = data;
         }
     });
     return response;
@@ -245,7 +245,7 @@ GitHubApi.prototype.replace_labels_for_issue = function(issue_id, labels) {
         data: JSON.stringify(labels),
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth)
+                xhr.setRequestHeader("Authorization", me.auth);
         },
         success: function(data) {
         }
@@ -260,10 +260,10 @@ function get_phases(labels) {
     });
     phases.sort(function(a, b) {
         if (a.name > b.name) 
-    		return 1;
-    	else if (a.name < b.name)
-    	    return -1;
-    	return 0;
+            return 1;
+        else if (a.name < b.name)
+            return -1;
+        return 0;
     })
     return phases;
 }
@@ -300,7 +300,7 @@ function remove_phases(labels) {
     var result = []
     $.each(labels, function(i, label){
         if(!/Phase #\d+ - .+/.test(label.name))
-            result.push(label)
+            result.push(label);
     });
     return result;
 }
@@ -309,7 +309,7 @@ function get_labels_name(labels) {
     var result = []
     $.each(labels, function(i, label){
         if(!/Phase #\d+ - .+/.test(label.name))
-            result.push(label.name)
+            result.push(label.name);
     });
     return result;
 }
@@ -319,29 +319,30 @@ function start(repo_user, repo_name, auth) {
     var labels = client.get_labels();
     var phases = get_phases(labels);
     draw_phases(phases);
-        
+
     $('.issues').sortable({
         connectWith: ".issues",
-    	distance: 15,
-    	revert: true,
+        distance: 15,
+        revert: true,
         opacity: 0.9,
-    	placeholder: "ui-state-highlight issue-placeholder",
-    	start: function(event, ui){
-        var height = $(ui.item).height();
-    	    $('.issue-placeholder').height(height - 20 + 4);
-	    },
-		stop: function(event, ui){
-		    var $element = $(ui.item);
-		    var number = $element.attr('data-number');
-		    var phase = $element.parents('.phase').attr('data-name');
-		    labels = client.get_labels_for_issue(number);
-		    labels = remove_phases(labels);
-		    labels = get_labels_name(labels);
-		    labels.push(phase);		    
-		    client.replace_labels_for_issue(number, labels);
-		}
-	}).disableSelection();
-        
+        handle: '.issue-header',
+        placeholder: "ui-state-highlight issue-placeholder",
+        start: function(event, ui){
+            var height = $(ui.item).height();
+            $('.issue-placeholder').height(height - 20 + 4);
+        },
+        stop: function(event, ui){
+            var $element = $(ui.item);
+            var number = $element.attr('data-number');
+            var phase = $element.parents('.phase').attr('data-name');
+            labels = client.get_labels_for_issue(number);
+            labels = remove_phases(labels);
+            labels = get_labels_name(labels);
+            labels.push(phase);
+            client.replace_labels_for_issue(number, labels);
+        }
+    }).disableSelection();
+
     $('[href=#phases]').click();
 }
 
@@ -356,37 +357,37 @@ $(function(){
         if (save) {
             $.cookie('saved', true);
             $.cookie('username', username);
-			$.cookie('password', password);
-			$.cookie('repo_user', repo_user);
-			$.cookie('repo_name', repo_name);
+            $.cookie('password', password);
+            $.cookie('repo_user', repo_user);
+            $.cookie('repo_name', repo_name);
         }
-        
+
         var auth = {
             username: username,
             password: password
         };
-        
+
         start(repo_user, repo_name, auth);
-        
+
         return false;
     });
-    
+
     $('#tabs').tabs();
-    
+
     if($.cookie('saved')) {
         var username = $.cookie('username');
-		var password = $.cookie('password');
-		var repo_user = $.cookie('repo_user');
-		var repo_name = $.cookie('repo_name');
+        var password = $.cookie('password');
+        var repo_user = $.cookie('repo_user');
+        var repo_name = $.cookie('repo_name');
         var auth = {
             username: username,
             password: password
         };
         start(repo_user, repo_name, auth);
-        
+
     }
-    
-    
+
+
 });
         </script>
     </head>
@@ -399,34 +400,34 @@ $(function(){
                 <div id="title">Kanban for GitHub</div>
             </ul>
             <div id="login">
-	            <form id="loginform">
-	    	        <p>
-        	    	    <label for="username"><br />Username
-            		        <input type="text" name="username" value=""/>
-        	        	</label>
-		            </p>
-	    		    <p>
-            		    <label for="username"><br />Password
-            	    	    <input type="password" name="password" value=""/>
-	    	            </label>
-    		        </p>
-	        	    <p>
-            		    <label for="username"><br />Repo User
-            	    	    <input type="text" name="repo-user" value=""/>
-	    	            </label>
-    		        </p>
-	        	    <p>
-            		    <label for="username"><br />Repo Name
-            	    	    <input type="text" name="repo-name" value=""/>
-	    	            </label>
-    		        </p>
-    		        <p>
-            		    <label for="save"><br />Save data
-            	    	    <input type="checkbox" name="save"/>
-	    	            </label>
-    		        </p>
-	        	    <input type="submit"/>
-		        </form>
+                <form id="loginform">
+                    <p>
+                        <label for="username"><br />Username
+                            <input type="text" name="username" value=""/>
+                        </label>
+                    </p>
+                    <p>
+                        <label for="username"><br />Password
+                            <input type="password" name="password" value=""/>
+                        </label>
+                    </p>
+                    <p>
+                        <label for="username"><br />Repo User
+                            <input type="text" name="repo-user" value=""/>
+                        </label>
+                    </p>
+                    <p>
+                        <label for="username"><br />Repo Name
+                            <input type="text" name="repo-name" value=""/>
+                        </label>
+                    </p>
+                    <p>
+                        <label for="save"><br />Save data
+                            <input type="checkbox" name="save"/>
+                        </label>
+                    </p>
+                    <input type="submit"/>
+                </form>
             </div>
             <div id="phases"></div>
             <div id="labels"></div>
