@@ -381,7 +381,7 @@ function start(repo_user, repo_name, auth) {
         opacity: 0.9,
         handle: '.issue-header',
         placeholder: "ui-state-highlight issue-placeholder",
-        start: function(event, ui){
+        start: function(event, ui) {
             var height = $(ui.item).height();
             $('.issue-placeholder').height(height - 20 + 4);
         },
@@ -441,14 +441,14 @@ $(function(){
 
     }
 
-    $('.open-issue').live('click', function(){
+/*    $('.open-issue').live('click', function(){
         var issue_number = $(this).parent().parent().attr('data-number');
         var issue = client.get_issue(issue_number, 'application/vnd.github-issue.html+json');
         var rendered = $('#issue-dialog-template').tmpl(issue);
         var title = issue.number + ' - ' + issue.title;
         $("#issue-dialog").html(rendered).dialog('open').dialog('option', 'title', title);
         return false;
-    });
+    });/**/
 
     $('#issue-dialog').dialog({
         autoOpen: false,
