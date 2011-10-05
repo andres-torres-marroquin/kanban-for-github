@@ -421,7 +421,11 @@ $(function(){
             password: password
         };
 
-        start(repo_user, repo_name, auth);
+        try {
+            start(repo_user, repo_name, auth);
+        } catch(err) {
+            alert("Bad credentials");
+        }
 
         return false;
     });
@@ -437,8 +441,12 @@ $(function(){
             username: username,
             password: password
         };
-        start(repo_user, repo_name, auth);
 
+        try {
+            start(repo_user, repo_name, auth);
+        } catch(err) {
+            alert("Bad credentials");
+        }
     }
 
 /*    $('.open-issue').live('click', function(){
