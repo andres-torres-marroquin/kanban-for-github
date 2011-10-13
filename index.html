@@ -153,9 +153,6 @@ function get_labels_name(labels) {
 
 function start(repo_user, repo_name, auth) {
     client = new GitHubApi(repo_user, repo_name, auth);
-
-    $('#tab-header-template').tmpl(client.get_authenticated_user()).appendTo('#tab-header');
-
     var labels = client.get_labels();
     var phases = get_phases(labels);
     draw_phases(phases);
@@ -184,6 +181,9 @@ function start(repo_user, repo_name, auth) {
     }).disableSelection();
 
     $('[href=#phases]').click();
+
+    $('#tab-header').html('');
+    $('#tab-header-template').tmpl(client.get_authenticated_user()).appendTo('#tab-header');
 }
 
 $(function(){

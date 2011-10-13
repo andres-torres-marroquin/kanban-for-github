@@ -1,11 +1,12 @@
-var GITHUB_API_URL = 'https://api.github.com/repos/';
+var GITHUB_API_URL = 'https://api.github.com/';
+var GITHUB_API_URL_REPOS = GITHUB_API_URL + 'repos/';
 
 function GitHubApi(user, repo, auth) {
     this.user = user;
     this.repo = repo;
     this.is_auth_enabled = auth.username && auth.password;
     this.auth = "Basic " + Base64.encode(auth.username + ":" + auth.password);
-    this.base_url = GITHUB_API_URL + this.user + '/' + this.repo + '/';
+    this.base_url = GITHUB_API_URL_REPOS + this.user + '/' + this.repo + '/';
 }
 
 GitHubApi.prototype._clean_params = function (parameters) {
@@ -130,7 +131,7 @@ GitHubApi.prototype.get_authenticated_user = function() {
     var response = null;
     var me = this;
     $.ajax({
-        url: 'https://api.github.com/' + 'user',
+        url: GITHUB_API_URL + 'user',
         async: false,
         dataType: 'json',
         beforeSend: function(xhr) {
