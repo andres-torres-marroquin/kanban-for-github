@@ -28,12 +28,11 @@ GitHubApi.prototype.get_issues = function(parameters, mime_type) {
         dataType: 'json',
         beforeSend: function(xhr) {
             if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth)
+                xhr.setRequestHeader("Authorization", me.auth);
             if(mime_type)
                 xhr.setRequestHeader("Accept", mime_type);
         },
         success: function(data) {
-            $('#issues').html('');
             response = data;
         }
     });
@@ -125,4 +124,22 @@ GitHubApi.prototype.replace_labels_for_issue = function(issue_id, labels) {
                 xhr.setRequestHeader("Authorization", me.auth);
         }
     });
+}
+
+GitHubApi.prototype.get_authenticated_user = function() {
+    var response = null;
+    var me = this;
+    $.ajax({
+        url: 'https://api.github.com/' + 'user',
+        async: false,
+        dataType: 'json',
+        beforeSend: function(xhr) {
+            if(me.is_auth_enabled)
+                xhr.setRequestHeader("Authorization", me.auth);
+        },
+        success: function(data) {
+            response = data;
+        }
+    });
+    return response;
 }

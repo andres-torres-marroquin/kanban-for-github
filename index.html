@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Kanban for GitHub</title>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
         <link href="media/css/style.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
@@ -10,6 +11,17 @@
         <script type="text/javascript" src="media/js/jquery.cookie.js"></script>
         <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"></script>
         <script type="text/javascript" src="media/js/jquery.github-api.js"></script>
+<script id="tab-header-template" type="text/x-jquery-tmpl">
+    <div id="title">
+        Kanban for GitHub
+    </div>
+    <div id="user-name">
+        ${name} |
+        <a href="#" id="logout">logout</a>
+    </div>
+    <img id="user-avatar" src="${avatar_url}" width="35" height="35" alt="andres-torres-marroquin" title="andres-torres-marroquin"/>
+</script>
+
 <script id="issue-template" type="text/x-jquery-tmpl">
     <div class="issue ui-widget-content" data-number="${number}">
         <div class="issue-header ui-state-default">
@@ -77,8 +89,6 @@
         <script type="text/javascript">
 var client = null;
 
-
-
 function get_phases(labels) {
     var phases = [];
     $.each(labels, function(i, label){
@@ -143,6 +153,9 @@ function get_labels_name(labels) {
 
 function start(repo_user, repo_name, auth) {
     client = new GitHubApi(repo_user, repo_name, auth);
+
+    $('#tab-header-template').tmpl(client.get_authenticated_user()).appendTo('#tab-header');
+
     var labels = client.get_labels();
     var phases = get_phases(labels);
     draw_phases(phases);
@@ -181,12 +194,17 @@ $(function(){
         var repo_user = $this.find('[name=repo-user]').val();
         var repo_name = $this.find('[name=repo-name]').val();
         var save = $this.find('[name=save]').attr('checked');
+
+        cookie_options = {
+            expires: 7 // Expires in seven days after login
+        }
+
         if (save) {
-            $.cookie('saved', true);
-            $.cookie('username', username);
-            $.cookie('password', password);
-            $.cookie('repo_user', repo_user);
-            $.cookie('repo_name', repo_name);
+            $.cookie('saved', true, cookie_options);
+            $.cookie('username', username, cookie_options);
+            $.cookie('password', password, cookie_options);
+            $.cookie('repo_user', repo_user, cookie_options);
+            $.cookie('repo_name', repo_name, cookie_options);
         }
 
         var auth = {
@@ -199,7 +217,16 @@ $(function(){
         } catch(err) {
             alert("Bad credentials");
         }
+        return false;
+    });
 
+    $('#logout').live('click', function(){
+        $.cookie('saved', null);
+        $.cookie('username', null);
+        $.cookie('password', null);
+        $.cookie('repo_user', null);
+        $.cookie('repo_name', null);
+        location.reload()
         return false;
     });
 
@@ -247,7 +274,11 @@ $(function(){
                 <li><a href="#login">Login</a></li>
                 <li><a href="#phases">Phases</a></li>
                 <li><a href="#labels">Labels</a></li>
-                <div id="title">Kanban for GitHub</div>
+                <div id="tab-header">
+                    <div id="title">
+                        Kanban for GitHub
+                    </div>
+                </div>
             </ul>
             <div id="login">
                 <form id="loginform">

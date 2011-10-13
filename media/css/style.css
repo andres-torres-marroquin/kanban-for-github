@@ -1,7 +1,20 @@
 #title {
-    float: right;
     font-size: 15px;
-    margin: 10px 30px;
+    position: absolute;
+    top: 8px;
+    right: 66px;
+}
+#user-name {
+    position: absolute;
+    top: 29px;
+    right: 68px;
+    font-size: 10px;
+    font-weight: normal;
+}
+#user-avatar {
+    position: absolute;
+    top: 8px;
+    right: 13px;
 }
 #tabs {
     position: fixed;
