@@ -16,23 +16,26 @@ GitHubApi.prototype._clean_params = function (parameters) {
     });
 }
 
+GitHubApi.prototype._get_headers = function (mime_type) {
+    var headers = {};
+    if(this.is_auth_enabled)
+        headers['Authorization'] = this.auth;
+    if(mime_type)
+        headers['Accept'] = mime_type
+    return headers;
+}
+
 GitHubApi.prototype.get_issues = function(parameters, mime_type) {
     var response = null;
     var parameters = parameters || {};
     var mime_type = mime_type || false;
     this._clean_params(parameters);
-    var me = this;
     $.ajax({
         url: this.base_url + 'issues',
         async: false,
         data: parameters,
+        headers: this._get_headers(mime_type),
         dataType: 'json',
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth);
-            if(mime_type)
-                xhr.setRequestHeader("Accept", mime_type);
-        },
         success: function(data) {
             response = data;
         }
@@ -43,17 +46,11 @@ GitHubApi.prototype.get_issues = function(parameters, mime_type) {
 GitHubApi.prototype.get_issue = function(issue_id, mime_type) {
     var response = null;
     var mime_type = mime_type || false;
-    var me = this;
     $.ajax({
         url: this.base_url + 'issues/' + issue_id,
         async: false,
         dataType: 'json',
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth)
-            if(mime_type)
-                xhr.setRequestHeader("Accept", mime_type);
-        },
+        headers: this._get_headers(mime_type),
         success: function(data) {
             response = data;
         }
@@ -64,16 +61,12 @@ GitHubApi.prototype.get_issue = function(issue_id, mime_type) {
 GitHubApi.prototype.get_labels = function(parameters) {
     var response = null;
     var parameters = parameters || {};
-    var me = this;
     $.ajax({
         url: this.base_url + 'labels',
         async: false,
         data: parameters,
         dataType: 'json',
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth)
-        },
+        headers: this._get_headers(),
         success: function(data) {
             response = data;
         }
@@ -82,30 +75,22 @@ GitHubApi.prototype.get_labels = function(parameters) {
 }
 
 GitHubApi.prototype.add_labels_to_issue = function(issue_id, labels) {
-    var me = this;
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
         type: 'POST',
         dataType: 'json',
         data: JSON.stringify(labels),
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth)
-        }
+        headers: this._get_headers()
     });
 }
 
 GitHubApi.prototype.get_labels_for_issue = function(issue_id) {
-    var me = this;
     var response = null;
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
         async: false,
         dataType: 'json',
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth);
-        },
+        headers: this._get_headers(),
         success: function(data) {
             response = data;
         }
@@ -114,30 +99,22 @@ GitHubApi.prototype.get_labels_for_issue = function(issue_id) {
 }
 
 GitHubApi.prototype.replace_labels_for_issue = function(issue_id, labels) {
-    var me = this;
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
         type: 'PUT',
         dataType: 'json',
         data: JSON.stringify(labels),
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth);
-        }
+        headers: this._get_headers()
     });
 }
 
 GitHubApi.prototype.get_authenticated_user = function() {
     var response = null;
-    var me = this;
     $.ajax({
         url: GITHUB_API_URL + 'user',
         async: false,
         dataType: 'json',
-        beforeSend: function(xhr) {
-            if(me.is_auth_enabled)
-                xhr.setRequestHeader("Authorization", me.auth);
-        },
+        headers: this._get_headers(),
         success: function(data) {
             response = data;
         }
