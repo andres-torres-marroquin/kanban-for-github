@@ -74,6 +74,42 @@ GitHubApi.prototype.get_labels = function(parameters) {
     return response;
 }
 
+GitHubApi.prototype.get_label = function(label_name) {
+    var response = null;
+    $.ajax({
+        url: this.base_url + 'labels/' + label_name,
+        async: false,
+        dataType: 'json',
+        headers: this._get_headers(),
+        success: function(data) {
+            response = data;
+        }
+    });
+    return response;
+}
+
+GitHubApi.prototype.create_label = function(parameters) {
+    var parameters = parameters || {};
+    $.ajax({
+        url: this.base_url + 'labels',
+        type: 'POST',
+        dataType: 'json',
+        data: JSON.stringify(parameters),
+        headers: this._get_headers()
+    });
+}
+
+GitHubApi.prototype.update_label = function(label_name, parameters) {
+    var parameters = parameters || {};
+    $.ajax({
+        url: this.base_url + 'labels/' + label_name,
+        type: 'PATCH',
+        dataType: 'json',
+        data: JSON.stringify(parameters),
+        headers: this._get_headers()
+    });
+}
+
 GitHubApi.prototype.add_labels_to_issue = function(issue_id, labels) {
     $.ajax({
         url: this.base_url + 'issues/' + issue_id + '/labels',
