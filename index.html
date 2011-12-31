@@ -214,6 +214,7 @@ $(function(){
 
         try {
             start(repo_user, repo_name, auth);
+            this.reset();
         } catch(err) {
             alert("Bad credentials");
         }
@@ -283,27 +284,27 @@ $(function(){
             <div id="login">
                 <form id="loginform">
                     <p>
-                        <label for="username"><br />Username
+                        <label for="username"><br />Github Username:
                             <input type="text" name="username" value=""/>
                         </label>
                     </p>
                     <p>
-                        <label for="username"><br />Password
+                        <label for="username"><br />Github Password:
                             <input type="password" name="password" value=""/>
                         </label>
                     </p>
                     <p>
-                        <label for="username"><br />Repo User
+                        <label for="username"><br />Repository User:
                             <input type="text" name="repo-user" value=""/>
                         </label>
                     </p>
                     <p>
-                        <label for="username"><br />Repo Name
+                        <label for="username"><br />Repository Name:
                             <input type="text" name="repo-name" value=""/>
                         </label>
                     </p>
                     <p>
-                        <label for="save"><br />Save data
+                        <label for="save"><br />Save data:
                             <input type="checkbox" name="save"/>
                         </label>
                     </p>
