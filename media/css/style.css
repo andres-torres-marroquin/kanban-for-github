@@ -1,3 +1,6 @@
+.hidden, .templates {
+    display: none;
+}
 #title {
     font-size: 15px;
     position: absolute;
