@@ -78,7 +78,6 @@ $ ->
                 (set_repo repo, client) for repo in $.cookie('repos').split(',')
         catch err
             alert 'Wrong credentials'
-            throw err
 
     $('#loginform').submit ->
         $this = $ this
