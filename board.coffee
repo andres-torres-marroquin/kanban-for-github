@@ -100,6 +100,7 @@ class Board
   setup_sortable: ->
     $issues = @$container.find '.issues'
     client = @client
+    repo_url = @repo_url
     $issues.sortable
         connectWith: $issues
         distance: 15
@@ -114,12 +115,15 @@ class Board
             $element = $ ui.item
             number = $element.attr 'data-number'
             phase = $element.parents('.phase').attr 'data-name'
+            client.set_repo_url repo_url
             labels = client.get_labels_for_issue number
-            labels = (label.name for label in labels when not phase_regex.test(label.name))
+            labels = (label.name for label in labels)
+            if phase in labels # phase was not changed
+                return
+            labels = (label for label in labels when not phase_regex.test(label))
             labels.push phase
             client.replace_labels_for_issue number, labels
     .disableSelection()
-    $('.phases').removeClass('hidden').click()
     $('#tabs').scrollTop 0
 
 @Board = Board
