@@ -37,8 +37,7 @@ $ ->
         render_repo = (repo) ->
             """
             <div class="repo-selector" data-repo-url="#{repo.url}">
-                <a href="#{repo.html_url}" target="_blank"></a>
-                <span class='repo-url'>#{repo.html_url}</span>
+                <a href="#{repo.html_url}" target="_blank">#{repo.html_url}</a>
                 <button class="select-repo">Use this</button>
             </div>
             """
