@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <title>Kanban for GitHub</title>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+        <link href="media/css/style.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="http://www.webtoolkit.info/djs/webtoolkit.base64.js"></script>
+        <script type="text/javascript" src="media/js/JSON-js/json2.js"></script>
+        <script type="text/javascript" src="media/js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="https://raw.github.com/jquery/jquery-tmpl/master/jquery.tmpl.min.js"></script>
+        <script type="text/javascript" src="media/js/jquery.github-api.js"></script>
+        <script type="text/javascript" src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js"></script>
+        <script type="text/coffeescript" src="board.coffee"></script>
+        <script type="text/coffeescript">
+$ ->
+    $('#tabs').tabs()
+
+    render_user = (user) ->
+        """
+        <div id="title">
+            Kanban for GitHub
+        </div>
+        <div id="user-name">
+            #{user.login} |
+            <a href="#" id="logout">logout</a>
+        </div>
+        <img id="user-avatar" src="#{user.avatar_url}" width="35" height="35" alt="#{user.login}" title="#{user.login}"/>
+        """
+
+    set_repo = (repo_url, container, client) ->
+        b = new Board(repo_url, container, client)
+        b.draw()
+
+    draw_repos = (client) ->
+        render_repo = (repo) ->
+            """
+            <div class="repo-selector" data-repo-url="#{repo.url}">
+                <a href="#{repo.html_url}" target="_blank"></a>
+                <span class='repo-url'>#{repo.html_url}</span>
+                <button class="select-repo">Use this</button>
+            </div>
+            """
+
+        repos = client.get_repos()
+
+        repos.sort (a, b) ->
+            if a.html_url > b.html_url
+                1
+            else if a.html_url < b.html_url
+                -1
+            else
+                0
+
+        repos = (render_repo repo for repo in repos).join('')
+        $('#repos').append $ repos
+        $('.repos').removeClass('hidden').click()
+
+        $('.select-repo').die().live 'click', ->
+            repo_url = $(this).parent().attr 'data-repo-url'
+            container = '#phases'
+            set_repo(repo_url, container, client)
+
+    start = (username, password) ->
+        auth =
+            username: username
+            password: password
+
+        try
+            client = new GitHubApi auth
+            draw_repos client
+            $(render_user client.get_authenticated_user()).appendTo('#tab-header')
+            $('#tabs').tabs 'remove', 0
+        catch err
+            alert 'Wrong credentials'
+
+    $('#loginform').submit ->
+        $this = $ this
+        username = $this.find('[name=username]').val()
+        password = $this.find('[name=password]').val()
+        save = $this.find('[name=save]').attr('checked')
+
+        cookie_options =
+            expires: 7 # Expires in seven days after login
+
+        if save
+            $.cookie 'username', username, cookie_options
+            $.cookie 'password', password, cookie_options
+            $.cookie 'saved', true, cookie_options
+
+        start(username, password)
+
+        false
+
+    $('#logout').live 'click', ->
+        $.cookie 'saved', null
+        $.cookie 'username', null
+        $.cookie 'password', null
+        location.reload()
+        false
+
+    if $.cookie 'saved'
+        username = $.cookie 'username'
+        password = $.cookie 'password'
+        start(username, password)
+
+        </script>
+    </head>
+    <body>
+        </div>
+        <div id="tabs">
+            <ul>
+                <li><a href="#login">Login</a></li>
+                <li><a class="repos hidden" href="#repos">Repos</a></li>
+                <li><a class="phases hidden" href="#phases">Phases</a></li>
+                <div id="tab-header">
+                    <div id="title">
+                        Kanban for GitHub
+                    </div>
+                </div>
+            </ul>
+            <div id="login">
+                <form id="loginform">
+                    <p>
+                        <label for="username"><br />Github Username:
+                            <input type="text" name="username" value=""/>
+                        </label>
+                    </p>
+                    <p>
+                        <label for="username"><br />Github Password:
+                            <input type="password" name="password" value=""/>
+                        </label>
+                    </p>
+                        <label for="save"><br />Remember me:
+                            <input type="checkbox" name="save"/>
+                        </label>
+                    </p>
+                    <input type="submit"/>
+                </form>
+            </div>
+            <div id="repos"></div>
+            <div id="phases"></div>
+        </div>
+        <div id="issue-dialog"></div>
+    </body>
+</html>

@@ -42,8 +42,9 @@ GitHubApi.prototype.get_org_repos = function (org_name, parameters) {
 }
 
 GitHubApi.prototype.get_repos = function () {
-    var repos = client.get_my_repos();
-    var orgs = client.get_organizations()
+    var repos = this.get_my_repos();
+    var orgs = this.get_organizations();
+    var client = this;
 
     $.each(orgs, function(i, v) {
         var org_repos = client.get_org_repos(v.login, {
